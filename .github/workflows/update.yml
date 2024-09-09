@@ -1,0 +1,30 @@
+name: Parse JSON and update file
+
+on:
+  schedule: 
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  parse-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download JSON data
+        run: |
+          curl -o desktop.json https://cdn.jsdelivr.net/gh/microlinkhq/top-user-agents@master/src/desktop.json
+
+      - name: Convert JSON to plaintext
+        run: |
+          cat desktop.json | grep -o '"[^"]*"' | tr -d '"' > output.txt
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add output.txt
+          git commit -m "Update output.txt with parsed JSON data"
+          git push
