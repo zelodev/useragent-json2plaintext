@@ -17,9 +17,9 @@ jobs:
         run: |
           curl -o desktop.json https://cdn.jsdelivr.net/gh/microlinkhq/top-user-agents@master/src/desktop.json
 
-      - name: Convert JSON to plaintext
+      - name: Convert JSON to plaintext and filter for Windows NT
         run: |
-          cat desktop.json | grep -o '"[^"]*"' | tr -d '"' > output.txt
+          cat desktop.json | grep -o '"[^"]*"' | tr -d '"' | grep 'Windows NT' > output.txt
 
       - name: Commit and push changes
         run: |
